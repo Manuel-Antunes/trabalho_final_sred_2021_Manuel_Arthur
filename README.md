@@ -1,14 +1,14 @@
 # Instituto Federal de Alagoas - Campus Arapiraca
-## Prof. Alaelson Jatobá
+### Prof. Alaelson Jatobá
 
-## Alunos: 
+### Alunos: 
 
-# Sumário
+## Sumário
 
-# 1. Introdução
+## 1. Introdução
 
-# 2. Definições Iniciais
+## 2. Definições Iniciais
 
-# 3. Implementação dos Serivços de Rede (Cada serviço uma sessão)
+## 3. Implementação dos Serivços de Rede (Cada serviço uma sessão)
 
-# Considerações Finais
+## Considerações Finais

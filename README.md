@@ -4,3 +4,5 @@
 ## Alunos: 
 * Manuel Eduardo Nascimento Antunes
 * Arthur Brito Ribeiro
+* Gustavo Eloizio Cavalcante Santos
+* Eduardo Roger Melo Mendonça

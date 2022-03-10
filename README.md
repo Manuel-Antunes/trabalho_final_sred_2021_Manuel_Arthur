@@ -26,9 +26,9 @@
 | IP do WEB | ens160 | 10.9.14.xxx | ens192 |	192.168.14.5 |
 | IP do BD | ens160 | 10.9.14.xxx | ens192 |	192.168.14.6 |
 
-### DEFINIÇÂO DE NOMES E DOMÍNIO (grupo4.turma914.ifalara.local):				
+### DEFINIÇÂO DE NOMES E DOMÍNIO (grupo1.turma914.ifalara.local):				
 
-| VM | Nome | Domínio (zona): | grupo4.turma914.ifalara.local |
+| VM | Nome | Domínio (zona): | grupo1.turma914.ifalara.local |
 | --- | --- |--- | --- |
 | Aluno08 | Arthur | FQDN do GW: | gw.grupo1.turma914.ifalara.local |
 | Aluno03 | Eduardo |	FQDN do SAMBA: | smb.grupo1.turma914.ifalara.local |

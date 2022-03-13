@@ -23,8 +23,8 @@
 | IP do SAMBA: | ens160 | 10.9.14.106 | ens192 |	192.168.14.2 |
 | IP do NS1: | ens160 | 10.9.14.132 | ens192 |	192.168.14.3 |
 | IP do NS2: | ens160 | 10.9.14.118 | ens192 |	192.168.14.4 |
-| IP do WEB | ens160 | 10.9.14.xxx | ens192 |	192.168.14.5 |
-| IP do BD | ens160 | 10.9.14.xxx | ens192 |	192.168.14.6 |
+| IP do WEB | ens160 | 10.9.14.211 | ens192 |	192.168.14.5 |
+| IP do BD | ens160 | 10.9.14.212 | ens192 |	192.168.14.6 |
 
 ### DEFINIÇÂO DE NOMES E DOMÍNIO (grupo1.turma914.ifalara.local):				
 
@@ -167,6 +167,116 @@ systemd-resolve --status
 ping google.com
 ```
 ![image](https://user-images.githubusercontent.com/62352928/157167834-1ae7b75f-e7c2-4051-871d-9f0e2c89fc24.png)
+
+8. Mudar o nome da máquina para o que está definido na tabela:
+```bash
+sudo hostnamectl set-hostname ns2.grupo1.turma914.ifalara.local
+```
+
+9. Correção no arquivo 
+```bash
+sudo nano /etc/netplan/00-installer-config.yaml
+```
+![image](https://user-images.githubusercontent.com/62352928/158070971-b27a9de8-09c0-4e35-90f5-7d412b0c85fb.png)
+
+10. Teste de dig no gateway com:
+```bash
+dig @10.9.14.132 gw.grupo1.turma914.ifalara.local
+```
+![image](https://user-images.githubusercontent.com/62352928/158070997-1ea88df6-df2d-490e-8240-422cdbe3be95.png)
+
+11. Para verificar se a interface 160 esta funcionando e ping google.com para o teste de ping
+```bash
+systemd-resolve --status ens160
+```
+![image](https://user-images.githubusercontent.com/62352928/158071059-8e66665f-91c1-4265-afba-79fbf8aaa7ac.png)
+
+## Instalação do Apache
+
+1. Para fazer update na maquina via apt:
+```bash
+$ sudo apt update 
+```
+
+2. Para instalar o apache:
+```bash
+$ sudo apt install apache2 
+```
+
+3. Para ver o status do apache:
+```bash
+sudo systemctl status apache2
+```
+![image](https://user-images.githubusercontent.com/62352928/158071203-1e592108-1445-498b-8a96-14c1bbbfb5a2.png)
+
+## Criação do Site
+
+1. Para criar um diretorio com nosso dominio
+```bash
+sudo mkdir /var/www/grupo1.turma914.ifalara.local
+```
+
+2. Para atribui a propriedade do diretorio com a variavel do ambiente $USER:
+```bash
+sudo chown -R $USER:$USER /var/www/grupo1.turma914.ifalara.local 
+```
+
+3. Para criar permissões do web host:
+```bash
+sudo chmod -R 755 /var/www/grupo1.turma914.ifalara.local 
+```
+
+4. Para criar pagina web em html:
+```bash
+sudo nano /var/www/grupo1.turma914.ifalara.local/index.html
+```
+![image](https://user-images.githubusercontent.com/62352928/158071373-174e463f-a252-4e34-89ec-7330f34d5093.png)
+
+5. Digita ip da maquina www no navegador para confirmar que esta funcinando:
+![image](https://user-images.githubusercontent.com/62352928/158071411-4b67df2b-8b71-4044-88cd-28f812167ac2.png)
+
+6. Para criar arquivo de configuração novo:
+```bash
+sudo nano /etc/apache2/sites-available/grupo1.turma914.ifalara.local.conf
+```
+![image](https://user-images.githubusercontent.com/62352928/158071490-46741202-a07a-40a9-b659-2f66a1df2e9d.png)
+
+7. Para habilitar nova configuração:
+```bash
+sudo a2ensite grupo1.turma914.ifalara.local.conf
+```
+
+8. Para desabilitar site padrão:
+
+```bash
+sudo a2dissite 000-default.conf
+```
+
+9. Para garantir que toda sintaxe está correta:
+```bash
+sudo apache2ctl configtest
+```
+
+11. Para reiniciar o apache e habilitar as configurações:
+```bash
+sudo systemctl restart apache2
+```
+
+12. Acessa novamente o IP da máquina www no navegador para garantir que o site foi atualizado para o html definido:
+![image](https://user-images.githubusercontent.com/62352928/158071606-755069eb-2485-4854-b387-5cd14601ea4b.png)
+
+### Inicio do processo na máquina bd
+
+1. Para mudar o nome da maquina para o atribuido na planilha:
+```bash
+sudo hostnamectl set-hostname bd.grupo1.turma914.ifalara.local
+```
+
+2. Para configurar o arquivo com o dominio correto, e dns existente:
+```bash
+sudo nano /etc/netplan/00-installer-config.yaml
+```
+![image](https://user-images.githubusercontent.com/62352928/158071698-3f30ca1e-5a71-46a6-af67-ccc7b9bd0457.png)
 
 
 ## Considerações Finais

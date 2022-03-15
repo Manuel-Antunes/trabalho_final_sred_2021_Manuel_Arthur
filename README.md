@@ -278,5 +278,54 @@ sudo nano /etc/netplan/00-installer-config.yaml
 ```
 ![image](https://user-images.githubusercontent.com/62352928/158071698-3f30ca1e-5a71-46a6-af67-ccc7b9bd0457.png)
 
+3. Adicionar as maquinas www e bd na zona direta do ns1
+```bash
+sudo nano /etc/bind/zones/db.grupo1.turma914.ifalara.local
+```
+![image](https://user-images.githubusercontent.com/62352928/158395916-42341f58-42b8-493f-9712-106da1c54ab3.png)
+
+4. Adicionar as maquinas www e bd na zona reversa do ns1
+```bash
+sudo nano /etc/bind/zones/db.10.9.14.rev 
+```
+![image](https://user-images.githubusercontent.com/62352928/158396110-57cb5f3c-3cfb-4482-b19a-2469faa1112f.png)
+
+5. Utilizar na maquina www para conectar com o dns do ns1 e ns2
+```bash
+sudo nano /etc/netplan/00-installer-config.yaml
+```
+![image](https://user-images.githubusercontent.com/62352928/158396317-95d7528e-a99e-454b-8453-63ee824b156f.png)
+
+
+### Instalação do PHP 7.4
+
+```bash
+sudo apt install php7.4 libapache2-mod-php7.4 php7.4-mysql php-common php7.4-cli php7.4-common php7.4-common php7.4-json php7.4-opcache php7.4-readline para instalar o php 7.4
+```
+
+1. Carregar o php7.4 no apache2:
+```bash
+sudo a2enmod php7.4
+```
+
+2. Reiniciar o apache:
+```bash
+sudo systemctl restart apache2
+```
+
+3. Criar o arquivo php na pasta
+```bash
+sudo touch /var/www/html/info.php
+```
+
+4. Modificar o arquivo 
+```bash
+sudo nano /var/www/html/info.php
+```
+![image](https://user-images.githubusercontent.com/62352928/158397210-619fcfdf-d8f4-4935-bc01-e0d9af36b7c8.png)
+
+5. Utiliza http://10.9.14.211/info.php no browser e esta página deve aprecer se tudo foi feito corretamente
+![image](https://user-images.githubusercontent.com/62352928/158397346-6e06d236-252d-4148-a35a-f3fe695aa760.png)
+
 
 ## Considerações Finais

@@ -191,6 +191,36 @@ systemd-resolve --status ens160
 ```
 ![image](https://user-images.githubusercontent.com/62352928/158071059-8e66665f-91c1-4265-afba-79fbf8aaa7ac.png)
 
+### Instalação do PHP 7.4
+
+```bash
+sudo apt install php7.4 libapache2-mod-php7.4 php7.4-mysql php-common php7.4-cli php7.4-common php7.4-common php7.4-json php7.4-opcache php7.4-readline para instalar o php 7.4
+```
+
+1. Carregar o php7.4 no apache2:
+```bash
+sudo a2enmod php7.4
+```
+
+2. Reiniciar o apache:
+```bash
+sudo systemctl restart apache2
+```
+
+3. Criar o arquivo php na pasta
+```bash
+sudo touch /var/www/html/info.php
+```
+
+4. Modificar o arquivo 
+```bash
+sudo nano /var/www/html/info.php
+```
+![image](https://user-images.githubusercontent.com/62352928/158397210-619fcfdf-d8f4-4935-bc01-e0d9af36b7c8.png)
+
+5. Utiliza http://10.9.14.211/info.php no browser e esta página deve aprecer se tudo foi feito corretamente
+![image](https://user-images.githubusercontent.com/62352928/158397346-6e06d236-252d-4148-a35a-f3fe695aa760.png)
+
 ## Instalação do Apache
 
 1. Para fazer update na maquina via apt:
@@ -296,36 +326,99 @@ sudo nano /etc/netplan/00-installer-config.yaml
 ```
 ![image](https://user-images.githubusercontent.com/62352928/158396317-95d7528e-a99e-454b-8453-63ee824b156f.png)
 
+6. Teste de dig com a maquina bd, note que na linha de answer section aparece o dominio correto e o ip 
 
-### Instalação do PHP 7.4
+![image](https://user-images.githubusercontent.com/62352928/158942783-ca8ea659-30f5-41b8-b68d-bfe66fd4637d.png)
 
+7. Para saber se a interface 160 está funcionando:
 ```bash
-sudo apt install php7.4 libapache2-mod-php7.4 php7.4-mysql php-common php7.4-cli php7.4-common php7.4-common php7.4-json php7.4-opcache php7.4-readline para instalar o php 7.4
+systemd-resolve --status ens160
+```
+Teste de ping com a maquina bd:
+```bash
+ping google.com
+```
+![image](https://user-images.githubusercontent.com/62352928/158943006-50194b3d-01e1-449c-b8f9-ecdf815c1200.png)
+
+### Instalar MySQL
+
+1.
+```bash
+sudo apt install mysql-server
 ```
 
-1. Carregar o php7.4 no apache2:
+2. Para garantir que o mysql já está funcionando:
 ```bash
-sudo a2enmod php7.4
+sudo systemctl status mysql
+```
+![image](https://user-images.githubusercontent.com/62352928/158943275-ec65ad4b-4d2c-46b0-a4fe-9a99013d1b37.png)
+
+3. Para mudar as linhas de mysqlx-bind-addresse bind-address de 127.0.0.1 para 0.0.0.0 a fim de liberar as interfaces de rede com o ip coringa, utilize:
+```bash
+sudo nano /etc/mysql/mysql.conf.d/mysqld.cnf
+```
+![image](https://user-images.githubusercontent.com/62352928/158943431-5c7b9a21-ab66-4124-97d3-4a0fd59e923e.png)
+
+4. Reinicie o MySQL:
+```bash
+sudo systemctl restart mysql
 ```
 
-2. Reiniciar o apache:
+5. Defina uma senha forte:
 ```bash
-sudo systemctl restart apache2
+sudo mysql_secure_installation
+```
+![image](https://user-images.githubusercontent.com/62352928/158943576-e47119eb-ff7d-4cc3-8972-4e7ab20832ff.png)
+
+6. Inicie o MySQL:
+```bash
+sudo mysql
+```
+![image](https://user-images.githubusercontent.com/62352928/158943684-5172262b-adff-4726-ae66-55959327074f.png)
+Nesse momento faz-se a criação do banco de dados
+
+7. Banco de Dados
+![image](https://user-images.githubusercontent.com/62352928/158943743-028fb5aa-a9cb-4030-9a8c-c3edece5d898.png)
+
+8. Agora mudamos para a máquina www e vamos baixar o script de teste, primeiramente baixando o zip unzip:
+```bash
+sudo apt install zip unzip -y
 ```
 
-3. Criar o arquivo php na pasta
+9. Para baixar o script de teste damos unzip script_teste_db.zip para desempacotar
 ```bash
-sudo touch /var/www/html/info.php
+curl https://github.com/alaelson/labredes2021/blob/main/network/lamp/testedb/script_teste_db.zip -o script_teste_db.zip
 ```
 
-4. Modificar o arquivo 
+10. Agora vamos acessar o diretorio do arquivo desempacotado:
 ```bash
-sudo nano /var/www/html/info.php
+cd script_teste_db/
 ```
-![image](https://user-images.githubusercontent.com/62352928/158397210-619fcfdf-d8f4-4935-bc01-e0d9af36b7c8.png)
 
-5. Utiliza http://10.9.14.211/info.php no browser e esta página deve aprecer se tudo foi feito corretamente
-![image](https://user-images.githubusercontent.com/62352928/158397346-6e06d236-252d-4148-a35a-f3fe695aa760.png)
+11. Modifica o script de deletar:
+```bash
+sudo nano del.php
+```
+![image](https://user-images.githubusercontent.com/62352928/158944163-398628e1-c0a7-4c94-9194-ff431e147150.png)
 
+12. Modifica o arquivo de insert do script:
+```bash
+sudo nano insert.php
+```
+![image](https://user-images.githubusercontent.com/62352928/158944262-51b6306f-81cf-4472-affa-5fb652ab07ef.png)
+
+13. Modifica o arquivo de select do script:
+```bash
+sudo nano select.php
+```
+![image](https://user-images.githubusercontent.com/62352928/158944371-1450964e-28ee-44ad-8617-17e6c757f31a.png)
+
+14. Modifica o arquivo de update do script:
+```bash
+sudo nano update.php
+```
+![image](https://user-images.githubusercontent.com/62352928/158944477-12bb2136-3591-42dd-a994-dc82143c1fcf.png)
+
+### Criação do site com integração com o banco de dados
 
 ## Considerações Finais

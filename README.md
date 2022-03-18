@@ -421,4 +421,214 @@ sudo nano update.php
 
 ### Criação do site com integração com o banco de dados
 
+1. iremos em https://github.com/alaelson/labredes2021/blob/551391a34728b53de28b2251ae206b17bedc277d/network/lamp/siteDemo/www.grupox.turma914.ifalara.local.zip para fazer o download do script do site demo e enviaremos para nossa maquina web via SCP onde o deixaremos no diretorio /var/www/grupo1.turma914.ifalara.local
+
+2. Vamos para o diretorio referido com:
+```bash
+cd /var/www/www.grupo1.turma914.ifalara.local/
+```
+
+3. E descompactamos esse script
+```bash
+ sudo unzip www.grupox.turma914.ifalara.local.zip
+```
+
+4. Damos f5 em nossa pagina no browser e o script ja deve estar funcionando
+![image](https://user-images.githubusercontent.com/62352928/159005212-db20197f-eb2a-4696-bdd5-f39e39e66353.png)
+
+5. E teremos que dar sudo nano em todos os arquivos .php do arquivo descompactado para colocarmos nossas credenciais referentes a nossa vm bd e ao nosso banco (ip e dominio)
+
+### Configuração da VM Samba
+
+1. Mudar o nome
+```bash
+sudo hostnamectl set-hostname samba-srv
+```
+
+2. Reiniciar a máquina
+```bash
+sudo reboot 
+```
+
+3. Adicionar os ips do ns1, ns2 e o domínio
+```bash
+sudo nano /etc/netplan/00-installer-config.yaml 
+```
+![image](https://user-images.githubusercontent.com/62352928/159005670-e90de6e6-f583-49c0-97fd-1c6f462a6c4a.png)
+
+4.  Para garantir que esta tudo certo:
+```bash
+sudo netplan apply e ifconfig -a
+```
+![image](https://user-images.githubusercontent.com/62352928/159005801-742f91f2-e78f-4c4d-9ca5-449a28229bae.png)
+
+5. Teste de ping para vm gw com maquina smb
+![image](https://user-images.githubusercontent.com/62352928/159005892-3d7cfda1-0577-4fd1-90f7-05182e03d7f0.png)
+
+### Configuração da máquina GW
+
+1. Mudar o nome da máquina
+```bash
+sudo hostnamectl set-hostname gw.grupo1.turma914.ifalara.local
+```
+```bash
+sudo reboot
+```
+
+2. Adicionar os dominios e ips corretos e atualizados e aplicar:
+```bash
+sudo nano /etc/netplan/00-installer-config.yaml 
+```
+```bash
+sudo netplan apply
+```
+
+3. Habilitar e liberar acesso ssh do firewall
+```bash
+sudo ufw enable
+```
+```bash
+sudo ufw allow ssh
+```
+
+4. Remover marca de comentária onde net/ipv4/ip_forward=1
+```bash
+sudo nano /etc/ufw/sysctl.conf
+```
+![image](https://user-images.githubusercontent.com/62352928/159006697-79ffdbfd-1f16-45b4-9673-24a63616dd52.png)
+
+5. Checar se está tudo correto
+```bash
+ifconfig -a
+```
+![image](https://user-images.githubusercontent.com/62352928/159006829-96581577-29c0-47e0-bc05-3e215b212c05.png)
+
+6. Video do servidor WEB LAMP em funcionamento: https://drive.google.com/file/d/14xYc_dvHQEkp6SFXqEvGQn_h1qiTqFkz/view?usp=sharing
+
+### Continuação da configuração da máquina Samba
+
+1. Copiar o arquivo de backup
+```bash
+sudo cp /etc/samba/smb.conf{,.backup}
+```
+
+2. Remover os comentários do arquivo
+```bash
+sudo bash -c 'grep -v -E "^#|^;" /etc/samba/smb.conf.backup | grep . > /etc/samba/smb.conf'
+```
+
+3. Configurar o arquivo smba e aplicar as interfaces existentes
+```bash
+sudo nano smb.conf
+```
+![image](https://user-images.githubusercontent.com/62352928/159007550-033902d2-4557-40ec-a65d-5d2536716a8b.png)
+
+4. Reiniciar servidor e aplicar alterações
+```bash
+systemctl restart smbd
+```
+
+5. Após criação do usuário do samba, iremos criar o diretorio primeiramente com:
+```bash
+mkdir sambashare
+```
+```bash
+sudo mkdir -p /samba/public
+```
+
+6. Mudar permissão do grupo
+```bash
+sudo chown -R nobody:nogroup /samba/public
+```
+
+7. Mudar permissão de escrita do grupo
+```bash
+sudo chmod -R 0775 /samba/public
+```
+
+8. Atribuir ao grupo sambashare
+```bash
+sudo chgrp sambashare /samba/public
+```
+
+9. Conecta ao serviço samba com as credenciais e ip do seu servidor samba através do explorador de arquivo
+![image](https://user-images.githubusercontent.com/62352928/159008547-ab67cb9e-42cb-4465-95b1-23bc418c4b48.png)
+
+10. Editar a pasta public para permitir apenas usuarios ligados ao sambashare
+```bash
+sudo nano /etc/samba/smb.conf
+```
+
+11. Reiniciar o serviço e aplicar alterações
+```bash
+systemctl restart smbd
+```
+
+12. Serviço samba em funcionamento: https://drive.google.com/file/d/1z-mU56gICKlH_aMJNzXO65f2AkcpRmG_/view?usp=sharing
+
+### Máquina gw de configuração do gateway server/NAT
+
+1. Criar arquivo lembrando de colocar seu LAN e WAN corretamente
+```bash
+sudo nano /etc/rc.local
+```
+![image](https://user-images.githubusercontent.com/62352928/159009255-59808347-4aa8-4308-8da3-67b992c48337.png)
+
+2. Tornar o arquivo inicializável no boot
+```bash
+sudo chmod 755 /etc/rc.local
+```
+
+3. Rodar o arquivo
+```bash
+sudo /etc/rc.local
+```
+
+4. Ir na maquina samba para modificar o arquivo adicionando o gateway configurado e comentar o outro
+```bash
+sudo nano /etc/netplan/00-installer-config.yaml
+```
+![image](https://user-images.githubusercontent.com/62352928/159009729-823f0dca-ef4b-4d6b-964b-13594c645e77.png)
+
+5. Aplicar alteração
+```bash
+sudo netplan apply
+```
+
+6. A partir desse momento nossa maquina samba so fica acesśel a partir da nossa maquina gw pois mudamos a rota
+
+7. Por conta disso precisaremos modificar no gw o arquivo /etc/rc.local adicionando as rotas com o ip do samba
+![image](https://user-images.githubusercontent.com/62352928/159010006-0f30cb19-2f06-4c50-98ba-ab6b09505c68.png)
+
+8. Vamos agora no ns1 em /etc/bind/zones/db.grupo1.turma914.ifalara.local  para comentar o samba existente e atribuir ao samba o ip do gw ou simplesmente deixar samba cname gw
+![image](https://user-images.githubusercontent.com/62352928/159010144-84b98980-bcc4-4852-b589-657264a8a21e.png)
+
+9. Reiniciar e aplicar as alterações
+```bash
+sudo systemctl restart bind9
+```
+
+10. Alterar o ip do samba pela subrede
+```bash
+sudo vi /etc/rc.local
+```
+![image](https://user-images.githubusercontent.com/62352928/159010411-3795dec8-070a-42fc-ae62-849854d991eb.png)
+
+11. Executar o arquivo
+```bash
+sudo /etc/rc.local
+```
+
+12. No arquivo /etc/rc.local adicionar o encaminhamento para o servidor web a porta 80
+![image](https://user-images.githubusercontent.com/62352928/159010607-0905c005-d496-41e8-94f0-c795f42864b9.png)
+
+13. Ir na maquina www em /etc/netplan/00-installer-config.yaml para fazer a dependência ao gateway pela subrede
+![image](https://user-images.githubusercontent.com/62352928/159010707-10e768a6-22ef-4d8f-b80d-5355d4b06ea2.png)
+
+14. Agora só teremos acesso ao nosso site atraves do gw (olhar URL)
+![image](https://user-images.githubusercontent.com/62352928/159010791-684385e4-c47f-44e2-b1dc-eed44982be47.png)
+
+15. Por fim, adicionar o bd á dependência do gateway modificando o arquivo /etc/netplan/00-installer-config.yaml da maquina bd
+![image](https://user-images.githubusercontent.com/62352928/159010924-860e5652-5f11-418d-ab4c-476afbe81872.png)
+
 ## Considerações Finais

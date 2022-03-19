@@ -465,46 +465,6 @@ sudo netplan apply e ifconfig -a
 5. Teste de ping para vm gw com maquina smb
 ![image](https://user-images.githubusercontent.com/62352928/159005892-3d7cfda1-0577-4fd1-90f7-05182e03d7f0.png)
 
-### Configuração da máquina GW
-
-1. Mudar o nome da máquina
-```bash
-sudo hostnamectl set-hostname gw.grupo1.turma914.ifalara.local
-```
-```bash
-sudo reboot
-```
-
-2. Adicionar os dominios e ips corretos e atualizados e aplicar:
-```bash
-sudo nano /etc/netplan/00-installer-config.yaml 
-```
-```bash
-sudo netplan apply
-```
-
-3. Habilitar e liberar acesso ssh do firewall
-```bash
-sudo ufw enable
-```
-```bash
-sudo ufw allow ssh
-```
-
-4. Remover marca de comentária onde net/ipv4/ip_forward=1
-```bash
-sudo nano /etc/ufw/sysctl.conf
-```
-![image](https://user-images.githubusercontent.com/62352928/159006697-79ffdbfd-1f16-45b4-9673-24a63616dd52.png)
-
-5. Checar se está tudo correto
-```bash
-ifconfig -a
-```
-![image](https://user-images.githubusercontent.com/62352928/159006829-96581577-29c0-47e0-bc05-3e215b212c05.png)
-
-6. Video do servidor WEB LAMP em funcionamento: https://drive.google.com/file/d/14xYc_dvHQEkp6SFXqEvGQn_h1qiTqFkz/view?usp=sharing
-
 ### Continuação da configuração da máquina Samba
 
 1. Copiar o arquivo de backup
@@ -565,6 +525,47 @@ systemctl restart smbd
 ```
 
 12. Serviço samba em funcionamento: https://drive.google.com/file/d/1z-mU56gICKlH_aMJNzXO65f2AkcpRmG_/view?usp=sharing
+
+
+### Configuração da máquina GW
+
+1. Mudar o nome da máquina
+```bash
+sudo hostnamectl set-hostname gw.grupo1.turma914.ifalara.local
+```
+```bash
+sudo reboot
+```
+
+2. Adicionar os dominios e ips corretos e atualizados e aplicar:
+```bash
+sudo nano /etc/netplan/00-installer-config.yaml 
+```
+```bash
+sudo netplan apply
+```
+
+3. Habilitar e liberar acesso ssh do firewall
+```bash
+sudo ufw enable
+```
+```bash
+sudo ufw allow ssh
+```
+
+4. Remover marca de comentária onde net/ipv4/ip_forward=1
+```bash
+sudo nano /etc/ufw/sysctl.conf
+```
+![image](https://user-images.githubusercontent.com/62352928/159006697-79ffdbfd-1f16-45b4-9673-24a63616dd52.png)
+
+5. Checar se está tudo correto
+```bash
+ifconfig -a
+```
+![image](https://user-images.githubusercontent.com/62352928/159006829-96581577-29c0-47e0-bc05-3e215b212c05.png)
+
+6. Video do servidor WEB LAMP em funcionamento: https://drive.google.com/file/d/14xYc_dvHQEkp6SFXqEvGQn_h1qiTqFkz/view?usp=sharing
 
 ### Máquina gw de configuração do gateway server/NAT
 
